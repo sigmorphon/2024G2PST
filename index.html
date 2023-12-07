@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Task 1: Fourth SIGMORPHON Shared Task on Grapheme-to-Phoneme Conversions</title>
+</head>
+<body>
+    <h1>Task 1: Fourth SIGMORPHON Shared Task on Grapheme-to-Phoneme Conversions</h1>
+    <p>In this task, participants will create computational models that map a sequence of 
+    "graphemes"—characters—representing a word to a transcription of that word's 
+    pronunciation. This task is an important part of speech technologies, including 
+    recognition and synthesis. This is the second iteration of this task.</p>
+    <p>Please sign up for the mailing list 
+    <a href="#">here</a> by clicking the button labeled "Ask to join group".</p>
+
+    <h2>Results</h2>
+    <p>Final results will be reported here by August 15, 2024. System papers and a summary 
+    of the task will appear in the SIGMORPHON 2024 proceedings.</p>
+
+    <h2>Data</h2>
+    <h3>Source</h3>
+    <p>The data is extracted from the English-language portion of 
+    <a href="https://en.wiktionary.org/wiki/Wiktionary:Main_Page">Wiktionary</a> using 
+    <a href="https://github.com/kylebgorman/wikipron">WikiPron</a> (Lee et al. 2020), 
+    then filtered and downsampled using proprietary techniques.</p>
+
+    <h3>Format</h3>
+    <p>Training and development data are UTF-8-encoded tab-separated values files. Each 
+    example occupies a single line and consists of a grapheme sequence—a sequence of 
+    <a href="https://en.wikipedia.org/wiki/Unicode_equivalence#Normal_forms">NFC</a> 
+    Unicode codepoints—a tab character, and the corresponding phone sequence, a 
+    roughly-phonemic IPA, tokenized using the <a href="#">segments</a> library. The 
+    following shows three lines of Romanian data:</p>
+
+    <h3>Subtasks</h3>
+    <p>There are three subtasks, which will be scored separately. Participant teams may 
+    submit as many systems as they want to as many subtasks as they want.</p>
+    <p>In all three subtasks, the data is randomly split into training (80%), development 
+    (10%), and testing (10%) data.</p>
+
+    <h4>Subtask 1: Multilingual G2P (Shared Orthography):</h4>
+    <p>Participants will be provided four multilingual training sets. Each dataset will be 
+    composed of languages utilizing the same orthography (Roman, Cyrillic, Devanagari, 
+    Arabic). For evaluation, each training set will be paired with a test set, with each 
+    test set composed of samples from the training languages along with two to three 
+    languages unseen in training but utilizing the same orthography as seen in training. 
+    Models in this track will be tasked to evaluate per training-test dataset pairing 
+    (i.e. models are trained on one orthography at a time).</p>
+
+    <h4>Subtask 2: Multilingual G2P (Restricted Orthography):</h4>
+    <p>Participants will be provided four multilingual training sets using the same script 
+    constraints as seen in Task 1. Provided these datasets, participants will be allowed 
+    to train over the concatenation of all data (or subset of) for single evaluation on 
+    the concatenation of all test datasets in Task 1. That is, the subtask will evaluate 
+    model ability to utilize mixed-orthography scripts for downstream evaluation.</p>
+
+    <h2>Subtask 3: Multilingual G2P (Unknown Orthograph):</h2>
+    <p>This task will function similarly to Task 2 but all unseen languages in the test 
+        set will be replaced with languages with orthographies distinct from all other 
+        scripts present in the preceding two tasks. For fairness, script systems will be 
+        chosen such that they are functionally similar to the training scripts (e.g., the 
+        unseen Devanagari languages will be replaced with other North Indic abugida).</p>
+
+    <h2>Evaluation</h2>
+    <p>The metric used to rank systems is word error rate (WER), the percentage of words 
+        for which the hypothesized transcription sequence does not match the gold 
+        transcription. This value, in accordance with common practice, is a decimal value 
+        multiplied by 100 (e.g.: 13.53). In the medium- and low-frequency tasks, WER is 
+        macro-averaged across all ten languages. We provide two Python scripts for 
+        evaluation:</p>
+    <ul>
+        <li><a href="#">evaluate.py</a> computes the WER for one language.</li>
+        <li><a href="#">evaluate_all.py</a> computes per-language and average WER across 
+        multiple languages.</li>
+    </ul>
+
+    <h2>Submission</h2>
+    <p>Please submit your results in the two-column (grapheme sequence, tab-character, 
+        tokenized phone sequence) TSV format, the same one used for the training and 
+        development data. If you use an internal representation other than NFC, you must 
+        convert back before submitting.</p>
+    <p>Please use <a href="#">this email form</a> to submit your results.</p>
+
+    <h2>Timeline</h2>
+    <ul>
+        <li>January 15, 2024: Data collection is complete, and data is released to 
+        participants</li>
+        <li>February 15, 2024: Baseline systems released to participants</li>
+        <li>May 15, 2024: Test data is available for participants</li>
+        <li>May 31, 2024: Final Submissions are due</li>
+        <li>June 3, 2024: Results announced to participants</li>
+        <li>June 22, 2024: System papers due for review</li>
+        <li>July 31, 2024: Reviews back to participants</li>
+        <li>August 15, 2024: CR deadline; task paper due from organizers.</li>
+    </ul>
+
+    <h2>Baseline</h2>
+    <p>Our general baseline model reuses the Transducer architecture from the 2021 and 
+        2022 tasks, using all provided training data for both SED and network training. 
+        However, we supplement training with the addition of a language identifying one-hot 
+        feature vector identifying current sample language. In line with 
+        <a href="#">Zhu et al. 2022</a>, we randomly mask this feature vector during 
+        training to allow inference over unknown languages in inference.</p>
+    <p>For Task 3, we address the issue of unknown script processing by adding a 
+        romanization preprocessing step through the uroman <a href="#">Hermjakob 2018</a> 
+        tool, a Unicode lookup tool for mapping scripts to romanization equivalents. After 
+        romanization, baselines are trained in line with other tasks.</p>
+
+    <h2>Comparison with 2022 shared task</h2>
+    <ul>
+        <li>Transfer languages are provided.</li>
+        <li>There are new languages.</li>
+        <li>The three subtasks have changed, organized around research questions.</li>
+        <li>There are surprise languages.</li>
+        <li>The data been subjected to novel quality-assurance procedures.</li>
+    </ul>
+  
+    <h2>Organizers</h2>
+    <p>The task is organized by members of the Computational Linguistics Lab at the 
+      <a href="https://www.gc.cuny.edu/">Graduate Center, City University of New York</a> 
+      and the <a href="#">University of British Columbia</a>.</p>
+
+      <h2>licensing</h2>
+      <p>The code is released under the 
+        <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License 2.0</a>. The 
+        data is released under the 
+        <a href="https://creativecommons.org/licenses/by-sa/3.0/legalcode">Creative Commons 
+        Attribution-ShareAlike 3.0 Unported License</a> inherited from Wiktionary itself.
+      </p>
+    
+      <h2>referencing</h2>
+      <p>Girrbach, L. 2023. 
+        <a href="https://aclanthology.org/2023.sigmorphon-1.28/">SIGMORPHON 2022 Shared Task 
+        on Grapheme-to-Phoneme Conversion Submission Description: Sequence Labelling for G2P
+        </a>. Proceedings of the 20th SIGMORPHON Workshop on Computational Research in 
+        Phonetics, Phonology, and Morphology, pages 239–244.
+      </p>
+    
+      <p>Lee, J. L, Ashby, L. F.E., Garza, M. E., Lee-Sikka, Y., Miller, S., Wong, A., 
+        McCarthy, A. D., and Gorman, K. 2020. 
+        <a href="#">Massively multilingual pronunciation mining with WikiPron</a>. In 
+        Proceedings of the 12th Language Resources and Evaluation Conference, pages 
+        4223-4228.
+      </p>
+    
+      <p>Makarov, P., and Clematide, S. 2018. 
+        <a href="#">Imitation learning for neural morphological string transduction</a>. In 
+        Proceedings of the 2018 Conference on Empirical Methods in Natural Language 
+        Processing, pages 2877-2882.
+      </p>
+    
+      <p>Makarov, P., and Clematide, S. 2020. 
+        <a href="#">CLUZH at SIGMORPHON 2020 shared task on multilingual grapheme-to-phoneme 
+        conversion</a>. In Proceedings of the 17th SIGMORPHON Workshop on Computational 
+        Research in Phonetics, Phonology, and Morphology, pages 171-176.
+      </p>
+    
+    </body>
+    </html>
