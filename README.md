@@ -1,5 +1,5 @@
 # Task 1: Fourth SIGMORPHON Shared Task on Grapheme-to-Phoneme Conversions
-In this task, participants will create computational models that map native orthography lemmas ("graphemes") to valid IPA transcription of that word's pronunciation. This task is crucial for speech processing, namely speech recognition and text-to-speech synthesis.
+In this task, participants will create computational models that map native orthography lemmas ("graphemes") to valid IPA transcriptions of phonemic pronunciation. This task is crucial for speech processing, namely speech recognition and text-to-speech synthesis.
 
 Please sign up for the mailing list [here](https://groups.google.com/forum/#!forum/sigmorphon-g2p-shared-task-2024/join) by clicking the button labeled "Ask to join group".
 
