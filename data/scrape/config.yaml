@@ -1,0 +1,53 @@
+#List of Orthographies
+orthographies: [
+  "devanagari",
+  "latin",
+  "cyrillic",
+  "arabic"
+]
+
+languages:
+  - devanagari:
+    - mar # marathi
+    - san # sanskrit
+    - hin # hindi
+    - nep # nepali
+  - latin:
+    - spa # spanish
+    - gle # irish
+    - ind # indonesian
+    - tgl # tagalog
+  - cyrillic:
+    - hbs # serbo_croatian
+    - mkd # macedonian
+    - bul # bulgarian
+    - ukr # ukrainian
+  - abjad:
+    - ara # arabic
+    - fas # farsi
+    - heb # hebrew
+    - urd # urdu
+
+tsv_dir: tsv
+
+# ISO 639-3 language code
+# Devanagari
+marathi: mar
+sanskrit: san
+hindi: hin
+nepali: nep
+# Cyrillic 
+serbo_croatian: hbs
+macedonian: mkd
+bulgarian: bul
+ukrainian: ukr
+# Abjad
+arabic: ara
+farsi: fas
+hebrew: heb
+urdu: urd
+# Latin
+spanish: spa
+irish: gle
+indonesian: ind
+tagalog: tgl

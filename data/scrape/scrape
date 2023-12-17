@@ -1,0 +1,26 @@
+#!/bin/bash
+# Runs the scrape.
+
+set -eou pipefail
+
+main() {
+    ./lib/setup_directories.py --config=config.yaml
+    ./lib/scrape_wikipron.py mar # Marathi
+    ./lib/scrape_wikipron.py san # sanskrit 
+    ./lib/scrape_wikipron.py hin # hindi
+    ./lib/scrape_wikipron.py nep # nepali
+    ./lib/scrape_wikipron.py spa -dialect='Latin America' # spanish
+    ./lib/scrape_wikipron.py gle # irish
+    ./lib/scrape_wikipron.py ind # indonesian
+    ./lib/scrape_wikipron.py tgl # tagalog
+    ./lib/scrape_wikipron.py hbs # serbo_croatian
+    ./lib/scrape_wikipron.py mkd # macedonian
+    ./lib/scrape_wikipron.py bul # bulgarian
+    ./lib/scrape_wikipron.py ukr # ukrainian
+    ./lib/scrape_wikipron.py ara # arabic
+    ./lib/scrape_wikipron.py fas # farsi
+    ./lib/scrape_wikipron.py heb # hebrew
+    ./lib/scrape_wikipron.py urd # urdu
+}
+
+main
