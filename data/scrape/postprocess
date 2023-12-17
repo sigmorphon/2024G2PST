@@ -1,0 +1,8 @@
+#!/bin/bash
+# Runs postprocessing and generate summary tsv.
+
+main {
+ 
+}
+
+main
