@@ -1,16 +1,18 @@
 # Task 1: Fourth SIGMORPHON Shared Task on Grapheme-to-Phoneme Conversions
-In this task, participants will create computational models that map a sequence of "graphemes"—characters—representing a word to a transcription of that word's pronunciation. This task is an important part of speech technologies, including recognition and synthesis. This is the second iteration of this task.
+In this task, participants will create computational models that map native orthography lemmas ("graphemes") to valid IPA transcriptions of phonemic pronunciation. This task is crucial for speech processing, namely speech recognition and text-to-speech synthesis.
 
-Please sign up for the mailing list [here]() by clicking the button labeled "Ask to join group".
+Please sign up for the mailing list [here](https://groups.google.com/forum/#!forum/sigmorphon-g2p-shared-task-2024/join) by clicking the button labeled "Ask to join group".
 
 ## Results
 Final results will be reported here by August 15, 2024.  System papers and a summary of the task will appear in the SIGMORPHON 2024 proceedings.
+
 ## Data
 ### Source
-The data is extracted from the English-language portion of [Wiktionary](https://en.wiktionary.org/wiki/Wiktionary:Main_Page) using [WikiPron](https://github.com/kylebgorman/wikipron) (Lee et al. 2020), then filtered and downsampled using proprietary techniques.
+The data is scraped from [Wiktionary](https://en.wiktionary.org/wiki/Wiktionary:Main_Page) using [WikiPron](https://github.com/kylebgorman/wikipron) (Lee et al. 2020).
 
 ### Format
 Training and development data are UTF-8-encoded tab-separated values files. Each example occupies a single line and consists of a grapheme sequence—a sequence of [NFC](https://en.wikipedia.org/wiki/Unicode_equivalence#Normal_forms) Unicode codepoints—a tab character, and the corresponding phone sequence, a roughly-phonemic IPA, tokenized using the [segments]() library. The following shows three lines of Romanian data:
+
 ### Subtasks
 There are three subtasks, which will be scored separately. Participant teams may submit as many systems as they want to as many subtasks as they want.
 
@@ -49,15 +51,15 @@ Please use [this email form]() to submit your results.
 * August 15, 2024: CR deadline; task paper due from organizers.
 
 ## Baseline
-Our general baseline model reuses the Transducer architecture from the 2021 and 2022 tasks, using all provided training data for both SED and network training. However, we supplement training with the addition of a language identifying one-hot feature vector identifying current sample language. In line with [Zhu et al. 2022], we randomly mask this feature vector during training to allow inference over unknown languages in inference. 
+Baseline results and discription will be released on February 15.
 
-For Task 3, we address the issue of unknown script processing by adding a romanization preprocessing step through the uroman [Hermjakob 2018] tool, a Unicode lookup tool for mapping scripts to romanization equivalents. After romanization, baselines are trained in line with other tasks.
 ## Comparison with 2022 shared task
 * Transfer languages are provided.
 * There are new languages.
 * The three subtasks have changed, organized around research questions.
 * There are surprise languages.
 * The data been subjected to novel quality-assurance procedures.
+  
 ## Organizers
 The task is organized by members of the Computational Linguistics Lab at the [Graduate Center, City University of New York](https://www.gc.cuny.edu/) and the [University of British Columbia]().
 
