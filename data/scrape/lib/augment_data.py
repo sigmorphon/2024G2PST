@@ -21,55 +21,87 @@ from vertexai.language_models import ChatModel, InputOutputTextPair
 from typing import List, Dict
 
 ROOT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-# NEPALI_DIR = os.path.join(ROOT_DIR, "tsv", "devanagari", "nep", "raw", "root_pos_rules.csv")
-# URDU_PATHS = os.path.join(ROOT_DIR, "tsv", "abjad", "urd", "raw")
 CONFIG_PATH = os.path.join(ROOT_DIR, "config.yaml")
 
 
-
 def _check_script(word: str, orth_id: str) -> bool:
+    """
+    Checks if all characters in a given word belong to a specific script as identified 
+    by the orthographic identifier.
+
+    Args:
+        word (str): The word whose characters are to be checked.
+        orth_id (str): The orthographic identifier representing a script (e.g., 'Latin', 'Arabic'). 
+            This is used to check each character of the word against.
+
+    Returns:
+        bool: True if all characters in the word belong to the script specified by orth_id, False otherwise.
+    """
     for char in word:
         if unicodedataplus.script(char) != orth_id:
             return False
     return True
 
 
-def _create_sample_examples(src_path: str, n = 50, seed = 42) -> List:
-    
+def _create_sample_examples(src_path: str, n=50, seed=42) -> List:
+    """
+    Selects a random sample of lines from a text file and returns them as a single string.
+
+    Args:
+        src_path (str): The path to the source text file from which lines will be sampled.
+        n (int, optional): The number of lines to sample from the source file. Defaults to 50.
+        seed (int, optional): The seed value for the random number generator to ensure 
+            reproducibility of the sample selection. Defaults to 42.
+
+    Returns:
+        List: A string where each element is a sampled line from the source file, 
+            combined into a single string separated by newline characters.
+    """
     with open(src_path, "r", encoding="utf8") as src:
         lines = src.readlines()
         lines = [line.rstrip() for line in lines]
         random.seed(seed)
         random_lines = random.sample(lines, n)
-        random_lines = ('\n'.join(random_lines))
+        random_lines = "\n".join(random_lines)
         return random_lines
 
 
-def _create_google_sample_examples(src_path: str, n = 50, seed = 42) -> List:
-    examples = []
-    with open(src_path, "r", encoding="utf8") as src:
-        lines = src.readlines()
-        lines = [line.rstrip() for line in lines]
-        random.seed(seed)
-        random_lines = random.sample(lines, n)
-    for line in random_lines:
-        line = line.split("\t")
-        src = line[0]
-        trg = line[1]
-        example = InputOutputTextPair(src, trg)
-        examples.append(example)
-    return examples
+def extract_urdu_samples(
+    orth_id: str = None,
+    n: int = 3000,
+    seed: int = 42,
+    sample_set_size=50,
+    pattern=None,
+    tsv_path=None,
+) -> set:
+    """
+    Extracts a set of Urdu language samples and organizes them into smaller subsets
+    for feeding to GPT-API for transcription.
 
+    Args:
+        orth_id (str, optional): Orthographic identifier used to check the script of the samples.
+            If None, the script check is skipped. Defaults to None.
+        n (int, optional): Total number of samples to select randomly from the collected samples.
+            Defaults to 3000.
+        seed (int, optional): Seed value for random sample selection to ensure reproducibility.
+            Defaults to 42.
+        sample_set_size (int, optional): Number of samples in each subset created from the total samples.
+            Defaults to 50.
+        pattern (str, optional): Glob pattern to identify and load Urdu text files. If None, no files are loaded.
+            Defaults to None.
+        tsv_path (str, optional): Path to a TSV file containing Urdu samples. If None, the file is not loaded.
+            Defaults to None.
 
-def extract_urdu_samples(orth_id: str =  "Arabic", n: int = 3000, seed: int = 42, sample_set_size = 50) -> set:
+    Returns:
+        set: A set of strings, where each string is a newline-separated list of Urdu samples.
+             Each string in the set represents a subset of the total samples.
+    """
     sample_sets = []
     samples_set = set()
-    pattern = f'{URDU_PATHS}/ur_udtb-ud-*.conllu'
-    tsv_path = f'{URDU_PATHS}/urd.tsv'
     urdu_files = glob.glob(pattern)
     with open(tsv_path, "r", encoding="utf8") as src:
         for line in src:
-            line = line.split('\t')
+            line = line.split("\t")
             lemma = line[0]
             samples_set.add(lemma)
     for file in urdu_files:
@@ -79,13 +111,13 @@ def extract_urdu_samples(orth_id: str =  "Arabic", n: int = 3000, seed: int = 42
                 if len(lst) > 2:
                     if not lst[2].isnumeric():
                         if lst[3] != "PUNCT":
-                            if _check_script(lst[2],orth_id):
+                            if _check_script(lst[2], orth_id):
                                 lemma = lst[2]
                                 samples_set.add(lemma)
     random.seed(seed)
     # Create 3000 samples
     selected_samples = random.sample(samples_set, n)
-    # Subset samples to 500 per loop for
+    # Subset samples to 50 per loop for
     # GPT transcription and write to list.
     sample_loops = int(n / sample_set_size)
     for i in range(sample_loops):
@@ -94,69 +126,70 @@ def extract_urdu_samples(orth_id: str =  "Arabic", n: int = 3000, seed: int = 42
         sample_sets.append(one_column_sample)
     return sample_sets
 
-    
-def get_gpt_ipa_transcription( 
-    language, 
-    examples, 
+
+def extract_pus_samples() -> set:
+    pass
+
+
+def extract_mar_samples() -> set:
+    pass
+
+
+def extract_nep_samples() -> set:
+    pass
+
+
+def get_gpt_ipa_transcription(
+    language,
+    examples,
     words: str,
     gpt_assistant_prompt,
     gpt_user_prompt,
     auth_key,
-    MaxToken=None): 
-    # using OpenAI's Completion module that helps execute  
-    # any tasks involving text 
+    MaxToken=None,
+):
+    """
+    Generates IPA (International Phonetic Alphabet) transcriptions for given words using GPT-4.
+
+    Args:
+        language: The language of the words for which IPA transcriptions are requested.
+        examples: Examples of transcriptions or related context to guide the GPT model.
+        words (str): A string of newline separated words to be transcribed into IPA.
+        gpt_assistant_prompt: The initial prompt or statement by the assistant to set the context for the GPT model.
+        gpt_user_prompt: A formatted string representing the user's request or question to the GPT model. 
+            This string should contain placeholders for 'language', 'examples', and 'words'.
+        auth_key: Authentication key for accessing OpenAI's API.
+        MaxToken (int, optional): Maximum number of tokens to generate in the response. 
+            If None, the default maximum is used.
+
+    Returns:
+        str: The content of the response from GPT-4, expected to be the IPA transcription of the provided words.
+    """
+    # using OpenAI's Completion module that helps execute
+    # any tasks involving text
     client = OpenAI(api_key=auth_key)
 
-    message=[{"role": "assistant", "content": gpt_assistant_prompt}, {"role": "user", "content": gpt_user_prompt.format(language = language, examples = examples, words = words)}]
-    temperature=0.1
-    max_tokens=MaxToken
-    frequency_penalty=0.0
+    message = [
+        {"role": "assistant", "content": gpt_assistant_prompt},
+        {
+            "role": "user",
+            "content": gpt_user_prompt.format(
+                language=language, examples=examples, words=words
+            ),
+        },
+    ]
+    temperature = 0.1
+    max_tokens = MaxToken
+    frequency_penalty = 0.0
 
     response = client.chat.completions.create(
         model="gpt-4",
-        messages = message,
+        messages=message,
         temperature=temperature,
         max_tokens=max_tokens,
-        frequency_penalty=frequency_penalty
+        frequency_penalty=frequency_penalty,
     )
     return response.choices[0].message.content
-
-
-def get_palm_ipa_transcription(
-    language: str, 
-    examples: List[str],
-    word: str,
-    assistant_prompt: str,
-    user_prompt: str,
-    project_id: str, 
-    location: str,
-    MaxToken: int = 50):
-    
-    # Initialize Vertex AI
-    vertexai.init(project=project_id, location=location)
-    
-    # Load the model
-    chat_model = ChatModel.from_pretrained("text-bison")
-
-    # TODO developer - override these parameters as needed:
-    parameters = {
-        "temperature": 0.1,  # Temperature controls the degree of randomness in token selection.
-        "max_output_tokens": MaxToken,  # Token limit determines the maximum amount of text output.
-        "top_p": 0.99,  # Tokens are selected from most probable to least until the sum of their probabilities equals the top_p value.
-        "top_k": 1,  # A top_k of 1 means the selected token is the most probable among all tokens.
-    }
-
-    chat = chat_model.start_chat(
-        context=assistant_prompt,
-        examples=examples,
-    )
-    user_response = user_prompt.format(language = language, examples = examples, word = word)
-    response = chat.send_message(
-        user_response, **parameters
-    )
- 
-
-    return response.text
 
 
 def main(args):
@@ -164,7 +197,7 @@ def main(args):
     with open(CONFIG_PATH) as src:
         config = yaml.safe_load(src)
     # Authenticate environment
-    os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = config['auth_key']
+    os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = config["auth_key"]
     # Create prompt to pass to GPT for transcription.
     gpt_assistant_prompt = """
     You are a helpful IPA transcription assistant. 
@@ -183,7 +216,12 @@ def main(args):
 
     # Retrieve Urdu Language Data
     if args.lang == "urd":
-        samples = extract_urdu_samples()
+        urdu_path = config["URDU_RAW"]
+        samples = extract_urdu_samples(
+            orth_id="Arabic",
+            pattern=f"{urdu_path}/ur_udtb-ud-*.conllu",
+            tsv_path=config["URDU_SAMPLE"],
+        )
         # print(samples)
         # track_samples = dict()
         pattern = f'{config["URDU_RAW"]}/ur_udtb-ud-*.conllu'
@@ -194,18 +232,19 @@ def main(args):
             for sample in tqdm(samples):
                 # Get GPT Transcriptions
                 transcription = get_gpt_ipa_transcription(
-                    gpt_assistant_prompt=gpt_assistant_prompt, 
-                    gpt_user_prompt= gpt_user_prompt, 
-                    language = "Urdu", 
-                    examples = examples, 
-                    words = sample,
-                    auth_key=config["OPEN_AI_KEY"], 
-                    MaxToken=None)
+                    gpt_assistant_prompt=gpt_assistant_prompt,
+                    gpt_user_prompt=gpt_user_prompt,
+                    language="Urdu",
+                    examples=examples,
+                    words=sample,
+                    auth_key=config["OPEN_AI_KEY"],
+                    MaxToken=None,
+                )
                 time.sleep(3)
-                print(transcription.rstrip(),file=sink)
+                print(transcription.rstrip(), file=sink)
     # Retrieve Nepali Language Data
     if args.lang == "nep":
-        samples = extract_urdu_samples()
+        samples = extract_nep_samples()  # Write function to get samples
         # print(samples)
         # track_samples = dict()
         tsv_path = os.path.join(ROOT_DIR, config["NEP_SAMPLE"])
@@ -215,18 +254,19 @@ def main(args):
             for sample in tqdm(samples):
                 # Get GPT Transcriptions
                 transcription = get_gpt_ipa_transcription(
-                    gpt_assistant_prompt=gpt_assistant_prompt, 
-                    gpt_user_prompt= gpt_user_prompt, 
-                    language = "Nepali", 
-                    examples = examples, 
-                    words = sample,
-                    auth_key=config["OPEN_AI_KEY"], 
-                    MaxToken=None)
+                    gpt_assistant_prompt=gpt_assistant_prompt,
+                    gpt_user_prompt=gpt_user_prompt,
+                    language="Nepali",
+                    examples=examples,
+                    words=sample,
+                    auth_key=config["OPEN_AI_KEY"],
+                    MaxToken=None,
+                )
                 time.sleep(3)
-                print(transcription.rstrip(),file=sink)
+                print(transcription.rstrip(), file=sink)
     # Retrieve Marathi Language Data
     if args.lang == "mar":
-        samples = extract_urdu_samples()
+        samples = extract_mar_samples()  # Write function to get samples
         # print(samples)
         # track_samples = dict()
         tsv_path = os.path.join(ROOT_DIR, config["MAR_SAMPLE"])
@@ -236,17 +276,18 @@ def main(args):
             for sample in tqdm(samples):
                 # Get GPT Transcriptions
                 transcription = get_gpt_ipa_transcription(
-                    gpt_assistant_prompt=gpt_assistant_prompt, 
-                    gpt_user_prompt= gpt_user_prompt, 
-                    language = "Marathi", 
-                    examples = examples, 
-                    words = sample,
-                    auth_key=config["OPEN_AI_KEY"], 
-                    MaxToken=None)
+                    gpt_assistant_prompt=gpt_assistant_prompt,
+                    gpt_user_prompt=gpt_user_prompt,
+                    language="Marathi",
+                    examples=examples,
+                    words=sample,
+                    auth_key=config["OPEN_AI_KEY"],
+                    MaxToken=None,
+                )
                 time.sleep(3)
-                print(transcription.rstrip(),file=sink)
+                print(transcription.rstrip(), file=sink)
     if args.lang == "pus":
-        samples = extract_urdu_samples()
+        samples = extract_pus_samples()  # Write function to get samples
         tsv_path = os.path.join(ROOT_DIR, config["PUS_SAMPLE"])
         outpath = os.path.join(ROOT_DIR, config["PUS_OUTPATH"])
         examples = _create_sample_examples(tsv_path)
@@ -254,16 +295,21 @@ def main(args):
             for sample in tqdm(samples):
                 # Get GPT Transcriptions
                 transcription = get_gpt_ipa_transcription(
-                    gpt_assistant_prompt=gpt_assistant_prompt, 
-                    gpt_user_prompt= gpt_user_prompt, 
-                    language = "Pashto", 
-                    examples = examples, 
-                    words = sample,
-                    auth_key=config["OPEN_AI_KEY"], 
-                    MaxToken=None)
+                    gpt_assistant_prompt=gpt_assistant_prompt,
+                    gpt_user_prompt=gpt_user_prompt,
+                    language="Pashto",
+                    examples=examples,
+                    words=sample,
+                    auth_key=config["OPEN_AI_KEY"],
+                    MaxToken=None,
+                )
                 time.sleep(3)
-                print(transcription.rstrip(),file=sink)
+                print(transcription.rstrip(), file=sink)
+
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(__doc__)
-    parser.add_argument("-lang", required=True, help="lang code for processing")
+    parser.add_argument(
+        "-lang", required=True, help="lang code for processing"
+    )
     main(parser.parse_args())
