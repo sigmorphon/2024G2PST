@@ -71,9 +71,8 @@ def extract_urdu_samples(
     n: int = 3000,
     seed: int = 42,
     sample_set_size=50,
-    pattern=None,
-    tsv_path=None,
-) -> set:
+    pattern=None
+) -> List[str]:
     """
     Extracts a set of Urdu language samples and organizes them into smaller subsets
     for feeding to GPT-API for transcription.
@@ -93,17 +92,12 @@ def extract_urdu_samples(
             Defaults to None.
 
     Returns:
-        set: A set of strings, where each string is a newline-separated list of Urdu samples.
+        List: List of strings, where each string is a newline-separated list of Urdu samples.
              Each string in the set represents a subset of the total samples.
     """
     sample_sets = []
     samples_set = set()
     urdu_files = glob.glob(pattern)
-    with open(tsv_path, "r", encoding="utf8") as src:
-        for line in src:
-            line = line.split("\t")
-            lemma = line[0]
-            samples_set.add(lemma)
     for file in urdu_files:
         with open(file, "r", encoding="utf8") as src:
             for line in tqdm(src):
@@ -219,12 +213,8 @@ def main(args):
         urdu_path = config["URDU_RAW"]
         samples = extract_urdu_samples(
             orth_id="Arabic",
-            pattern=f"{urdu_path}/ur_udtb-ud-*.conllu",
-            tsv_path=config["URDU_SAMPLE"],
+            pattern=f"{urdu_path}/ur_udtb-ud-*.conllu"
         )
-        # print(samples)
-        # track_samples = dict()
-        pattern = f'{config["URDU_RAW"]}/ur_udtb-ud-*.conllu'
         tsv_path = os.path.join(ROOT_DIR, config["URDU_SAMPLE"])
         outpath = os.path.join(ROOT_DIR, config["URDU_OUTPATH"])
         examples = _create_sample_examples(tsv_path)
