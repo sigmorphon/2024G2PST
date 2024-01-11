@@ -58,7 +58,7 @@ indonesian: ind
 tagalog: tgl
 
 # OPENAI Key
-OPEN_AI_KEY: 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
+OPEN_AI_KEY: None # Enter your OPENAI KEY here
 
 #GOOGLE AUTHS
 gcp_project_id: signmorphon-2024
