@@ -17,16 +17,19 @@ languages:
     - gle # irish
     - ind # indonesian
     - tgl # tagalog
+    -eng # english
   - cyrillic:
     - hbs # serbo_croatian
     - mkd # macedonian
     - bul # bulgarian
     - ukr # ukrainian
+    - rus # russian
   - abjad:
     - ara # arabic
     - fas # farsi
     - heb # hebrew
     - urd # urdu
+    - pus # pashto
 
 tsv_dir: tsv
 
@@ -36,7 +39,8 @@ marathi: mar
 sanskrit: san
 hindi: hin
 nepali: nep
-# Cyrillic 
+# Cyrillic
+russian: rus 
 serbo_croatian: hbs
 macedonian: mkd
 bulgarian: bul
@@ -47,7 +51,37 @@ farsi: fas
 hebrew: heb
 urdu: urd
 # Latin
+english: eng
 spanish: spa
 irish: gle
 indonesian: ind
 tagalog: tgl
+
+# OPENAI Key
+OPEN_AI_KEY: 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
+
+#GOOGLE AUTHS
+gcp_project_id: signmorphon-2024
+gcp_location: us-central1
+gcp_service_account: g2psigmorphon2024@signmorphon-2024.iam.gserviceaccount.com
+auth_key: data/scrape/keys/signmorphon-2024-85d1c5276afe.json
+
+# URDU File Paths
+URDU_RAW: data/scrape/tsv/abjad/urd/raw
+URDU_SAMPLE: data/scrape/tsv/abjad/urd/raw/urd.tsv
+URDU_OUTPATH: urdu_gpt_transcripts.tsv
+
+# Pashto File Paths
+PUS_RAW: data/scrape/tsv/abjad/pus/raw
+PUS_SAMPLE: data/scrape/tsv/abjad/pus/raw/pus.tsv
+PUS_OUTPATH: pus_gpt_transcripts.tsv
+
+# Marathi File Paths
+MAR_RAW: data/scrape/tsv/devanagari/mar/raw
+MAR_SAMPLE: data/scrape/tsv/devanagari/mar/raw/mar.tsv
+MAR_OUTPATH: mar_gpt_transcripts.tsv
+
+# Nepali File Paths
+NEP_RAW: data/scrape/tsv/devanagari/nep/raw
+NEP_SAMPLE: data/scrape/tsv/devanagari/nep/raw/nep.tsv
+NEP_OUTPATH: nep_gpt_transcripts.tsv
