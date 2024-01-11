@@ -73,15 +73,15 @@ URDU_OUTPATH: urdu_gpt_transcripts.tsv
 
 # Pashto File Paths
 PUS_RAW: data/scrape/tsv/abjad/pus/raw
-PUS_SAMPLE: data/scrape/tsv/abjad/pus/raw/pus.tsv
+PUS_SAMPLE: data/scrape/tsv/abjad/pus/raw/pus_gpt.tsv
 PUS_OUTPATH: pus_gpt_transcripts.tsv
 
 # Marathi File Paths
 MAR_RAW: data/scrape/tsv/devanagari/mar/raw
-MAR_SAMPLE: data/scrape/tsv/devanagari/mar/raw/mar.tsv
+MAR_SAMPLE: data/scrape/tsv/devanagari/mar/raw/mar_gpt.tsv
 MAR_OUTPATH: mar_gpt_transcripts.tsv
 
 # Nepali File Paths
 NEP_RAW: data/scrape/tsv/devanagari/nep/raw
-NEP_SAMPLE: data/scrape/tsv/devanagari/nep/raw/nep.tsv
+NEP_SAMPLE: data/scrape/tsv/devanagari/nep/raw/nep_gpt.csv
 NEP_OUTPATH: nep_gpt_transcripts.tsv
