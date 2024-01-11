@@ -9,12 +9,14 @@ from tqdm import tqdm
 import yaml
 
 
+from datasets import load_dataset
+import pandas as pd
+import numpy as np
 import openai
 from openai import OpenAI
-from datasets import load_dataset
-import unicodedataplus
 import random
 import spacy
+import unicodedataplus
 import vertexai
 from vertexai.language_models import ChatModel, InputOutputTextPair
 
@@ -129,8 +131,26 @@ def extract_mar_samples() -> set:
     pass
 
 
-def extract_nep_samples() -> set:
-    pass
+def extract_nep_samples(
+    source: str,
+    orth_id: str = None,
+    n: int = 3000,
+    seed: int = 42,
+    sample_set_size=50,
+    ) -> List[str]:
+    df = pd.read_csv(source)
+    sample_sets = []
+    sample_words = df.sample(n=n,random_state=seed)
+    selected_samples = set(sample_words["word"])
+    # Subset samples to 50 per loop for
+    # GPT transcription and write to list.
+    sample_loops = int(n / sample_set_size)
+    for i in range(sample_loops):
+        samples = random.sample(selected_samples, sample_set_size)
+        one_column_sample = "\n".join(samples)
+        sample_sets.append(one_column_sample)
+    return sample_sets
+
 
 
 def get_gpt_ipa_transcription(
@@ -207,7 +227,7 @@ def main(args):
     {examples}
     ---
     """
-
+    #TODO: make one function with expected data format.
     # Retrieve Urdu Language Data
     if args.lang == "urd":
         urdu_path = config["URDU_RAW"]
@@ -234,10 +254,12 @@ def main(args):
                 print(transcription.rstrip(), file=sink)
     # Retrieve Nepali Language Data
     if args.lang == "nep":
-        samples = extract_nep_samples()  # Write function to get samples
-        # print(samples)
+        src = os.path.join(ROOT_DIR, config["NEP_SAMPLE"])
+        samples = extract_nep_samples(
+            source = src
+        )  # Write function to get samples
         # track_samples = dict()
-        tsv_path = os.path.join(ROOT_DIR, config["NEP_SAMPLE"])
+        tsv_path = os.path.join(ROOT_DIR, config["NEP_EXAMPLES"])
         outpath = os.path.join(ROOT_DIR, config["NEP_OUTPATH"])
         examples = _create_sample_examples(tsv_path)
         with open(outpath, "a", encoding="utf8") as sink:
