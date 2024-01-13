@@ -127,8 +127,39 @@ def extract_pus_samples() -> set:
     pass
 
 
-def extract_mar_samples() -> set:
-    pass
+def extract_mar_samples(
+    orth_id: str = None,
+    n: int = 3000,
+    seed: int = 42,
+    sample_set_size=50,
+    pattern=None) -> List[str]:
+    sample_sets = []
+    samples_set = set()
+    files = glob.glob(pattern)
+    print(files)
+    for file in files:
+        with open(file, "r", encoding="utf8") as src:
+            for line in tqdm(src):
+                lst = line.split("\t")
+                if len(lst) > 2:
+                    if not lst[2].isnumeric():
+                        if lst[3] != "PUNCT":
+                            if _check_script(lst[2], orth_id):
+                                lemma = lst[2]
+                                samples_set.add(lemma)
+    random.seed(seed)
+    # Create 3000 samples
+    print(len(samples_set))
+    selected_samples = random.sample(samples_set, n)
+    # Subset samples to 50 per loop for
+    # GPT transcription and write to list.
+    sample_loops = int(n / sample_set_size)
+    for i in range(sample_loops):
+        samples = random.sample(selected_samples, sample_set_size)
+        one_column_sample = "\n".join(samples)
+        sample_sets.append(one_column_sample)
+    return sample_sets
+    
 
 
 def extract_nep_samples(
@@ -278,26 +309,29 @@ def main(args):
                 print(transcription.rstrip(), file=sink)
     # Retrieve Marathi Language Data
     if args.lang == "mar":
-        samples = extract_mar_samples()  # Write function to get samples
+        mar_path = os.path.join(ROOT_DIR, config["MAR_RAW"])
+        samples = extract_mar_samples(
+            orth_id="Devanagari",
+            pattern=f"{mar_path}/mr_ufal-ud-*.conllu")
         # print(samples)
         # track_samples = dict()
         tsv_path = os.path.join(ROOT_DIR, config["MAR_SAMPLE"])
         outpath = os.path.join(ROOT_DIR, config["MAR_OUTPATH"])
         examples = _create_sample_examples(tsv_path)
-        with open(outpath, "a", encoding="utf8") as sink:
-            for sample in tqdm(samples):
-                # Get GPT Transcriptions
-                transcription = get_gpt_ipa_transcription(
-                    gpt_assistant_prompt=gpt_assistant_prompt,
-                    gpt_user_prompt=gpt_user_prompt,
-                    language="Marathi",
-                    examples=examples,
-                    words=sample,
-                    auth_key=config["OPEN_AI_KEY"],
-                    MaxToken=None,
-                )
-                time.sleep(3)
-                print(transcription.rstrip(), file=sink)
+        # with open(outpath, "a", encoding="utf8") as sink:
+        #     for sample in tqdm(samples):
+        #         # Get GPT Transcriptions
+        #         transcription = get_gpt_ipa_transcription(
+        #             gpt_assistant_prompt=gpt_assistant_prompt,
+        #             gpt_user_prompt=gpt_user_prompt,
+        #             language="Marathi",
+        #             examples=examples,
+        #             words=sample,
+        #             auth_key=config["OPEN_AI_KEY"],
+        #             MaxToken=None,
+        #         )
+        #         time.sleep(3)
+        #         print(transcription.rstrip(), file=sink)
     if args.lang == "pus":
         samples = extract_pus_samples()  # Write function to get samples
         tsv_path = os.path.join(ROOT_DIR, config["PUS_SAMPLE"])
