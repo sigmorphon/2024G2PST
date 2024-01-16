@@ -1,2 +1,4 @@
 # File Paths
 /data/scrape/config.yaml
+/data/scrape/tsv/**/**/raw
+/data/scrape/keys/

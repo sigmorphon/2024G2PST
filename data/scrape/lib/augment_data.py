@@ -3,19 +3,21 @@
 
 import argparse
 import glob
+import math
 import os
 import time
 from tqdm import tqdm
 import yaml
 
-
 from datasets import load_dataset
 import pandas as pd
+import mahaNLP
+from mahaNLP.preprocess import Preprocess
+from mahaNLP.tokenizer import Tokenize
 import numpy as np
 import openai
 from openai import OpenAI
 import random
-import spacy
 import unicodedataplus
 import vertexai
 from vertexai.language_models import ChatModel, InputOutputTextPair
@@ -24,6 +26,19 @@ from typing import List, Dict
 
 ROOT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 CONFIG_PATH = os.path.join(ROOT_DIR, "config.yaml")
+
+
+def _tokenize_marathi(sent: str):
+    model = Tokenize()
+    tokenized_sent = model.word_tokenize(sent, punctuation = False)
+    return tokenized_sent
+
+
+def _filter_marathi(sent: str):
+    model = Preprocess()
+    remove_url = model.remove_url(sent)
+    filtered_sentence = model.remove_stopwords(remove_url)
+    return filtered_sentence
 
 
 def _check_script(word: str, orth_id: str) -> bool:
@@ -123,18 +138,78 @@ def extract_urdu_samples(
     return sample_sets
 
 
-def extract_pus_samples() -> set:
-    pass
+def extract_pus_samples(
+    source: str,
+    orth_id: str = None,
+    n: int = 4000,
+    seed: int = 42,
+    sample_set_size=50,
+    ) -> List[str]:
+
+    df = pd.read_csv(source)
+    sample_sets = []
+    selected_samples = set(df.iloc[:, 0].to_list())
+    # Subset samples to 50 per loop for
+    # GPT transcription and write to list.
+    sample_loops = math.ceil(len(selected_samples) / sample_set_size)
+    for i in range(sample_loops):
+        samples = random.sample(selected_samples, sample_set_size)
+        one_column_sample = "\n".join(samples)
+        sample_sets.append(one_column_sample)
+    return sample_sets
 
 
-def extract_mar_samples() -> set:
-    pass
+def extract_mar_samples(
+    orth_id: str = None,
+    n: int = 4000,
+    seed: int = 42,
+    sample_set_size=50,
+    pattern=None,
+    excel_file=None) -> List[str]:
+    sample_sets = []
+    samples_set = set()
+    files = glob.glob(pattern)
+    # Sample UD file set
+    for file in files:
+        with open(file, "r", encoding="utf8") as src:
+            for line in tqdm(src):
+                lst = line.split("\t")
+                if len(lst) > 2:
+                    if not lst[2].isnumeric():
+                        if lst[3] != "PUNCT":
+                            if _check_script(lst[2], orth_id):
+                                lemma = lst[2]
+                                samples_set.add(lemma)
+    # Sample hate speech set
+    # loads the dataframe into 'dataset'
+    # dataset_1 = load_datasets('mahaSent')
+    excel_mar = pd.read_excel(excel_file)
+    excel_sents = excel_mar["text"].to_list()
+    for sent in excel_sents:
+        tokenized_sent = _filter_marathi(sent)
+        for token in tokenized_sent:
+            if _check_script(token, orth_id):
+                if len(token) >= 3 and len(token) <= 9:
+                    samples_set.add(token)
+
+    random.seed(seed)
+    # Create 3000 samples
+    selected_samples = random.sample(samples_set, n)
+    # Subset samples to 50 per loop for
+    # GPT transcription and write to list.
+    sample_loops = int(n / sample_set_size)
+    for i in range(sample_loops):
+        samples = random.sample(selected_samples, sample_set_size)
+        one_column_sample = "\n".join(samples)
+        sample_sets.append(one_column_sample)
+    return sample_sets
+    
 
 
 def extract_nep_samples(
     source: str,
     orth_id: str = None,
-    n: int = 3000,
+    n: int = 4000,
     seed: int = 42,
     sample_set_size=50,
     ) -> List[str]:
@@ -278,10 +353,14 @@ def main(args):
                 print(transcription.rstrip(), file=sink)
     # Retrieve Marathi Language Data
     if args.lang == "mar":
-        samples = extract_mar_samples()  # Write function to get samples
-        # print(samples)
+        mar_path = os.path.join(ROOT_DIR, config["MAR_RAW"])
+        mar_excel_path = os.path.join(ROOT_DIR, config["MAR_XLSX"])
+        samples = extract_mar_samples(
+            orth_id="Devanagari",
+            pattern=f"{mar_path}/mr_ufal-ud-*.conllu",
+            excel_file=mar_excel_path)
         # track_samples = dict()
-        tsv_path = os.path.join(ROOT_DIR, config["MAR_SAMPLE"])
+        tsv_path = os.path.join(ROOT_DIR, config["MAR_EXAMPLES"])
         outpath = os.path.join(ROOT_DIR, config["MAR_OUTPATH"])
         examples = _create_sample_examples(tsv_path)
         with open(outpath, "a", encoding="utf8") as sink:
@@ -299,8 +378,9 @@ def main(args):
                 time.sleep(3)
                 print(transcription.rstrip(), file=sink)
     if args.lang == "pus":
-        samples = extract_pus_samples()  # Write function to get samples
-        tsv_path = os.path.join(ROOT_DIR, config["PUS_SAMPLE"])
+        sample_source = os.path.join(ROOT_DIR, config["PUS_SAMPLE"])
+        samples = extract_pus_samples(sample_source)  # Write function to get samples
+        tsv_path = os.path.join(ROOT_DIR, config["PUS_EXAMPLES"])
         outpath = os.path.join(ROOT_DIR, config["PUS_OUTPATH"])
         examples = _create_sample_examples(tsv_path)
         with open(outpath, "a", encoding="utf8") as sink:
