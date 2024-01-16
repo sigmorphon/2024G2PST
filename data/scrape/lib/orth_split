@@ -1,0 +1,14 @@
+#!/bin/bash
+
+# Split individual language data into train, val, test sets.
+
+ main() {
+     # ABJAD
+     python data/scrape/lib/create_orth_dataset.py -orth=abjad
+     # CYRLLIC
+     python data/scrape/lib/create_orth_dataset.py -orth=cyrillic
+     # LATIN
+     python data/scrape/lib/create_orth_dataset.py -orth=latin
+ }
+
+ main
