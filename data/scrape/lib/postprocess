@@ -1,0 +1,10 @@
+#!/bin/bash
+
+# CREATE SIGMORPHON DATASETS
+
+main() {
+    bash data/scrape/lib/split
+    bash data/scrape/lib/orth_split
+}
+
+main

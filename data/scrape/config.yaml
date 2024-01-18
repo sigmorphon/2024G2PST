@@ -80,6 +80,7 @@ PUS_OUTPATH: tsv/abjad/pus/raw/pus_gpt_transcripts.tsv
 # Marathi File Paths
 MAR_RAW: tsv/devanagari/mar/raw
 MAR_SAMPLE: tsv/devanagari/mar/raw/mar_gpt.tsv
+MAR_XLSX: tsv/devanagari/mar/raw/mar.xlsx
 MAR_EXAMPLES: tsv/devanagari/mar/raw/mar.tsv
 MAR_OUTPATH: tsv/devanagari/mar/raw/mar_gpt_transcripts.tsv
 
@@ -88,3 +89,7 @@ NEP_RAW: tsv/devanagari/nep/raw
 NEP_SAMPLE: tsv/devanagari/nep/raw/nep_gpt.csv
 NEP_EXAMPLES: tsv/devanagari/nep/raw/nep.tsv
 NEP_OUTPATH: tsv/devanagari/nep/raw/nep_gpt_transcripts.tsv
+
+
+# Gold Data File Paths
+ARA_GOLD: tsv/abjad/urd/raw/ara_gold.tsv
