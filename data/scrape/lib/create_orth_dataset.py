@@ -52,5 +52,5 @@ def main(args):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(__doc__)
-    parser.add_argument("-orth", help="string identifying the language being processed.")
+    parser.add_argument("-orth", help="string identifying the orthography being processed.")
     main(parser.parse_args())
