@@ -1,5 +1,5 @@
 # Task 1: Fourth SIGMORPHON Shared Task on Grapheme-to-Phoneme Conversions
-In this task, participants will create computational models that map native orthography lemmas ("graphemes") to valid IPA transcriptions of phonemic pronunciation. This task is crucial for speech processing, namely speech recognition and text-to-speech synthesis.
+In this task, participants will create computational models that map native orthography lemmas ("graphemes") to valid IPA transcriptions of phonemic pronunciation. This task is crucial for speech processing, namely text-to-speech synthesis.
 
 Please sign up for the mailing list [here](https://groups.google.com/forum/#!forum/sigmorphon-g2p-shared-task-2024/join) by clicking the button labeled "Ask to join group".
 
@@ -8,10 +8,10 @@ Final results will be reported here by August 15, 2024.  System papers and a sum
 
 ## Data
 ### Source
-The data is scraped from [Wiktionary](https://en.wiktionary.org/wiki/Wiktionary:Main_Page) using [WikiPron](https://github.com/kylebgorman/wikipron) (Lee et al. 2020).
+The data is scraped from [Wiktionary](https://en.wiktionary.org/wiki/Wiktionary:Main_Page) using [WikiPron](https://github.com/kylebgorman/wikipron) (Lee et al. 2020). Data is augmented with IPA transcriptions produced by GPT. All data is validated by organizers.
 
 ### Format
-Training and development data are UTF-8-encoded tab-separated values files. Each example occupies a single line and consists of a grapheme sequence—a sequence of [NFC](https://en.wikipedia.org/wiki/Unicode_equivalence#Normal_forms) Unicode codepoints—a tab character, and the corresponding phone sequence, a roughly-phonemic IPA, tokenized using the [segments]() library. The following shows three lines of Romanian data:
+Training and development data found in the `data/tsv` folder, separated by orthographic system. For each orthographic system, we include subdirectories for individual language sets and a subdirectory for the concatenation of languages. Datasets are UTF-8-encoded tab-separated values files. Each example occupies a single line and consists of a grapheme sequence—a sequence of [NFC](https://en.wikipedia.org/wiki/Unicode_equivalence#Normal_forms) Unicode codepoints—a tab character, and the corresponding phone sequence, a roughly-phonemic IPA, tokenized using the [segments]() library.
 
 ### Subtasks
 There are three subtasks, which will be scored separately. Participant teams may submit as many systems as they want to as many subtasks as they want.
@@ -20,15 +20,17 @@ In all three subtasks, the data is randomly split into training (80%), developme
 
 #### Subtask 1: Multilingual G2P (Shared Orthography):
 
-Participants will be provided four multilingual training sets. Each dataset will be composed of languages utilizing the same orthography (Roman, Cyrillic, Devanagari, Arabic). For evaluation, each training set will be paired with a test set, with each test set composed of samples from the training languages along with two to three languages unseen in training but utilizing the same orthography as seen in training. Models in this track will be tasked to evaluate per training-test dataset pairing (i.e. models are trained on one orthography at a time). 
+Participants will be provided three multilingual training sets. Each dataset will be composed of languages utilizing the same orthography (Roman, Cyrillic, Arabic). For evaluation, each training set will be paired with a test set, with each test set composed of samples from the training languages along with an additional unseen language but utilizing of the same orthography. Models in this track will be tasked to evaluate per training-test dataset pairing (i.e. models are trained on one orthography at a time). 
 
 #### Subtask 2: Multilingual G2P (Restricted Orthography):
 
-Participants will be provided four multilingual training sets using the same script constraints as seen in Task 1. Provided these datasets, participants will be allowed to train over the concatenation of all data (or subset of) for single evaluation on the concatenation of all test datasets in Task 1. That is, the subtask will evaluate model ability to utilize mixed-orthography scripts for downstream evaluation.
+Participants will be provided three multilingual training sets using the same script constraints as seen in Task 1. Provided these datasets, participants will be allowed to train over the concatenation of all data (or subset of) for single evaluation on the concatenation of all test datasets in Task 1. That is, the subtask will evaluate model ability to utilize mixed-orthography scripts for downstream evaluation.
 
-#### Subtask 3: Multilingual G2P (Unknown Orthograph):
+#### Subtask 3: Multilingual G2P (Unknown Orthography):
 
-This task will function similarly to Task 2 but all unseen languages in the test set will be replaced with languages with orthographies distinct from all other scripts present in the preceding two tasks. For fairness, script systems will be chosen such that they are functionally similar to the training scripts (e.g. the unseen Devanagari languages will be replaced with other North Indic abugida).
+This task will function similarly to Task 2 but all unseen languages in the test set will be replaced with languages with orthographies distinct from all other scripts present in the preceding two tasks. For fairness, script systems will be chosen such that they are functionally similar to the training scripts (e.g. the unseen Arabic languages will be replaced with other Abjad).
+
+(N.B. Due to quality concerns, the originally planned Devanagari-based subset was removed from the task. We will release this dataset later for community use.)
 
 ## Evaluation
 The metric used to rank systems is word error rate (WER), the percentage of words for which the hypothesized transcription sequence does not match the gold transcription. This value, in accordance with common practice, is a decimal value multiplied by 100 (e.g.: 13.53). In the medium- and low-frequency tasks, WER is macro-averaged across all ten languages. We provide two Python scripts for evaluation:
@@ -41,7 +43,7 @@ Please submit your results in the two-column (grapheme sequence, tab-character, 
 
 Please use [this email form]() to submit your results.
 ## Timeline
-* January 15, 2024: Data collection is complete, and data is released to participants
+* January 15, 2024: Data collection is complete, and data is released to participants **RELEASED**
 * February 15, 2024: Baseline systems released to participants
 * May 15, 2024: Test data is available for participants
 * May 31, 2024: Final Submissions are due
@@ -51,7 +53,7 @@ Please use [this email form]() to submit your results.
 * August 15, 2024: CR deadline; task paper due from organizers.
 
 ## Baseline
-Baseline results and discription will be released on February 15.
+Baseline results and discription will be released on February 15. 
 
 ## Comparison with 2022 shared task
 * Transfer languages are provided.
