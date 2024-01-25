@@ -54,13 +54,6 @@ Please use [this email form]() to submit your results.
 
 ## Baseline
 Baseline results and discription will be released on February 15. 
-
-## Comparison with 2022 shared task
-* Transfer languages are provided.
-* There are new languages.
-* The three subtasks have changed, organized around research questions.
-* There are surprise languages.
-* The data been subjected to novel quality-assurance procedures.
   
 ## Organizers
 The task is organized by members of the Computational Linguistics Lab at the [Graduate Center, City University of New York](https://www.gc.cuny.edu/) and the [University of British Columbia]().
