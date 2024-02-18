@@ -53,7 +53,15 @@ Please use [this email form]() to submit your results.
 * August 15, 2024: CR deadline; task paper due from organizers.
 
 ## Baseline
-Baseline results and discription will be released on February 15. 
+For baseline architectures, we are hosting a fork of the City University of New York CompLing lab's Yoyodyne project. Inspired by fairseq, Yoyodyne is a Pytorch-Lightning wrapper specialized for string transduction tasks. It hosts both general NLP architectures (LSTM, Transformer) along with models specialized for word level transduction (EditAction Transducer, Feature-invariant Transformers). Baseline architectures and the scripts for training are:
+
+- Edit-Action Transducer [4,5]: `yoyodyne/examples/baselines/transducer.sh`
+- Feature-invariant Transformer [6]: `yoyodyne/examples/baselines/transformer.sh`
+- LSTM with Attention [1]: `yoyodyne/examples/baselines/attentive_lstm.sh`
+
+Model architectures are largely equivalent and are intended to be run on a conventional consumer-level GPU or CPU. Interested participants are welcomed to build off the architectures or utilize other models available in the codebase (see `yoyodyne/README.md` for further details).
+
+All models may be evaluated using the `yoyodyne/examples/baselines/predict.sh` script, requiring only changes to the `arch` flag. 
   
 ## Organizers
 The task is organized by members of the Computational Linguistics Lab at the [Graduate Center, City University of New York](https://www.gc.cuny.edu/) and the [University of British Columbia]().
@@ -62,10 +70,14 @@ The task is organized by members of the Computational Linguistics Lab at the [Gr
 The code is released under the [Apache License 2.0](https://www.apache.org/licenses/LICENSE-2.0). The data is released under the [Creative Commons Attribution-ShareAlike 3.0 Unported License](https://creativecommons.org/licenses/by-sa/3.0/legalcode) inherited from Wiktionary itself.
 
 ## Referencing
-Girrbach, L. 2023. [SIGMORPHON 2022 Shared Task on Grapheme-to-Phoneme Conversion Submission Description: Sequence Labelling for G2P](https://aclanthology.org/2023.sigmorphon-1.28/). Proceedings of the 20th SIGMORPHON Workshop on Computational Research in Phonetics, Phonology, and Morphology, pages 239–244.
+[1] Bahdanau, D. Cho, K. Bengio, Y. [Neural Machine Translation by Jointly Learning to Align and Translate](https://arxiv.org/abs/1409.0473). In Proceedings of International Conference on Learning Representations 2015.
 
-Lee, J. L, Ashby, L. F.E., Garza, M. E., Lee-Sikka, Y., Miller, S., Wong, A., McCarthy, A. D., and Gorman, K. 2020. [Massively multilingual pronunciation mining with WikiPron](). In Proceedings of the 12th Language Resources and Evaluation Conference, pages 4223-4228.
+[2] Girrbach, L. 2023. [SIGMORPHON 2022 Shared Task on Grapheme-to-Phoneme Conversion Submission Description: Sequence Labelling for G2P](https://aclanthology.org/2023.sigmorphon-1.28/). Proceedings of the 20th SIGMORPHON Workshop on Computational Research in Phonetics, Phonology, and Morphology, pages 239–244.
 
-Makarov, P., and Clematide, S. 2018. [Imitation learning for neural morphological string transduction](). In Proceedings of the 2018 Conference on Empirical Methods in Natural Language Processing, pages 2877-2882.
+[3] Lee, J. L, Ashby, L. F.E., Garza, M. E., Lee-Sikka, Y., Miller, S., Wong, A., McCarthy, A. D., and Gorman, K. 2020. [Massively multilingual pronunciation mining with WikiPron](). In Proceedings of the 12th Language Resources and Evaluation Conference, pages 4223-4228.
 
-Makarov, P., and Clematide, S. 2020. [CLUZH at SIGMORPHON 2020 shared task on multilingual grapheme-to-phoneme conversion](). In Proceedings of the 17th SIGMORPHON Workshopon Computational Research in Phonetics, Phonology, and Morphology, pages 171-176.
+[4] Makarov, P., and Clematide, S. 2018. [Imitation learning for neural morphological string transduction](https://aclanthology.org/D18-1314/). In Proceedings of the 2018 Conference on Empirical Methods in Natural Language Processing, pages 2877-2882.
+
+[5] Makarov, P., and Clematide, S. 2020. [CLUZH at SIGMORPHON 2020 shared task on multilingual grapheme-to-phoneme conversion](https://aclanthology.org/2020.sigmorphon-1.19/). In Proceedings of the 17th SIGMORPHON Workshopon Computational Research in Phonetics, Phonology, and Morphology, pages 171-176.
+
+[6] Wu, S. Cotterell, R. Hulden, M. Applying the Transformer to Character-level Transduction](https://aclanthology.org/2021.eacl-main.163)  In Proceedings of the 16th Conference of the European Chapter of the Association for Computational Linguistics: Main Volume, pages 1901–1907.
