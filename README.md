@@ -18,11 +18,36 @@ There are three subtasks, which will be scored separately. Participant teams may
 
 In all three subtasks, the data is randomly split into training (80%), development (10%), and testing (10%) data.
 
+(N.B. Due to quality concerns, the originally planned Devanagari-based subset was removed from the task. We will release this dataset later for community use.)
+
 #### Subtask 1: Multilingual G2P (Shared Orthography):
 
-Participants will be provided three multilingual training sets. Each dataset will be composed of languages utilizing the same orthography (Roman, Cyrillic, Arabic). For evaluation, each training set will be paired with a test set, with each test set composed of samples from the training languages along with an additional unseen language of the same orthography. Models in this track will be tasked to evaluate per training-test dataset pairing (i.e. models are trained on one orthography at a time). 
+Participants will be provided three multilingual training sets. Each dataset will be composed of languages utilizing the same orthography (Roman, Cyrillic, Arabic). For evaluation, each training set will be paired with a test set, with each test set composed of samples from the training languages along with an additional unseen language of the same orthography. Models in this track will be tasked to evaluate per training-test dataset pairing (i.e. models are trained on one orthography at a time).
 
-Data for Subtask 1 is found in the folder `data/eval/task_1`. Each evaluation set is grouped by orthography system. (i.e. `{latin/cyrillic/abjad}_test.tsv`.) We also provide per language evaluation sets. 
+The evaluation languages for Task 1 are (surprise language in *italics*):
+
+Abjad:
+- Modern Standard Arabic
+- Farsi
+- Pashto
+- Urdu
+- *South Levantine Arabic*
+
+Cyrillic:
+- Bulgarian
+- Macedonian
+- Russian
+- Ukranian
+- *Serbo-Croatian*
+
+Latin:
+- English
+- Indonesian
+- Spanish
+- Tagalog
+- *Hungarian*
+
+Data for Subtask 1 is found in the folder `data/eval/task_1`. Each evaluation set is grouped by orthography system. (i.e. `{latin/cyrillic/abjad}_test.tsv`.) We also provide per language evaluation sets.
 
 #### Subtask 2: Multilingual G2P (Restricted Orthography):
 
@@ -34,9 +59,28 @@ Data for Subtask 2 is found in the folder `data/eval/task_2`. Each evaluation se
 
 This task will function similarly to Task 2 but all unseen languages in the test set will be replaced with languages with orthographies distinct from all other scripts present in the preceding two tasks. For fairness, script systems will be chosen such that they are functionally similar to the training scripts (e.g. the unseen Arabic languages will be replaced with other Abjad).
 
-Data for Subtask 3 is found in the folder `data/eval/task_3`. Each evaluation set is grouped by orthography system. (i.e. `{latin/cyrillic/abjad}_test.tsv`.) We also provide per language evaluation sets.
+Abjad:
+- Modern Standard Arabic
+- Farsi
+- Pashto
+- Urdu
+- *Hebrew*
 
-(N.B. Due to quality concerns, the originally planned Devanagari-based subset was removed from the task. We will release this dataset later for community use.)
+Cyrillic:
+- Bulgarian
+- Macedonian
+- Russian
+- Ukranian
+- *Romanian*
+
+Latin:
+- English
+- Indonesian
+- Spanish
+- Tagalog
+- *Mongolian*
+
+Data for Subtask 3 is found in the folder `data/eval/task_3`. Each evaluation set is grouped by orthography system. (i.e. `{latin/cyrillic/abjad}_test.tsv`.) We also provide per language evaluation sets.
 
 ## Evaluation
 The metric used to rank systems is word error rate (WER), the percentage of words for which the hypothesized transcription sequence does not match the gold transcription. This value, in accordance with common practice, is a decimal value multiplied by 100 (e.g.: 13.53). In the medium- and low-frequency tasks, WER is macro-averaged across all ten languages. We provide two Python scripts for evaluation:
@@ -67,8 +111,8 @@ For baseline architectures, we are hosting a fork of the City University of New 
 
 Model architectures are largely equivalent and are intended to be run on a conventional consumer-level GPU or CPU. Interested participants are welcomed to build off the architectures or utilize other models available in the codebase (see `yoyodyne/README.md` for further details).
 
-All models may be evaluated using the `yoyodyne/examples/baselines/predict.sh` script, requiring only changes to the `arch` flag. 
-  
+All models may be evaluated using the `yoyodyne/examples/baselines/predict.sh` script, requiring only changes to the `arch` flag.
+
 ## Organizers
 The task is organized by members of the Computational Linguistics Lab at the [Graduate Center, City University of New York](https://www.gc.cuny.edu/) and the [University of British Columbia]().
 
