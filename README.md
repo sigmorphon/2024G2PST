@@ -20,15 +20,21 @@ In all three subtasks, the data is randomly split into training (80%), developme
 
 #### Subtask 1: Multilingual G2P (Shared Orthography):
 
-Participants will be provided three multilingual training sets. Each dataset will be composed of languages utilizing the same orthography (Roman, Cyrillic, Arabic). For evaluation, each training set will be paired with a test set, with each test set composed of samples from the training languages along with an additional unseen language but utilizing of the same orthography. Models in this track will be tasked to evaluate per training-test dataset pairing (i.e. models are trained on one orthography at a time). 
+Participants will be provided three multilingual training sets. Each dataset will be composed of languages utilizing the same orthography (Roman, Cyrillic, Arabic). For evaluation, each training set will be paired with a test set, with each test set composed of samples from the training languages along with an additional unseen language of the same orthography. Models in this track will be tasked to evaluate per training-test dataset pairing (i.e. models are trained on one orthography at a time). 
+
+Data for Subtask 1 is found in the folder `data/eval/task_1`. Each evaluation set is grouped by orthography system. (i.e. `{latin/cyrillic/abjad}_test.tsv`.) We also provide per language evaluation sets. 
 
 #### Subtask 2: Multilingual G2P (Restricted Orthography):
 
 Participants will be provided three multilingual training sets using the same script constraints as seen in Task 1. Provided these datasets, participants will be allowed to train over the concatenation of all data (or subset of) for single evaluation on the concatenation of all test datasets in Task 1. That is, the subtask will evaluate model ability to utilize mixed-orthography scripts for downstream evaluation.
 
+Data for Subtask 2 is found in the folder `data/eval/task_2`. Each evaluation set is grouped by orthography system. (i.e. `{latin/cyrillic/abjad}_test.tsv`.) We also provide per language evaluation sets. (Note, this is the same data as used for Subtask 1 and is copied for convenience.)
+
 #### Subtask 3: Multilingual G2P (Unknown Orthography):
 
 This task will function similarly to Task 2 but all unseen languages in the test set will be replaced with languages with orthographies distinct from all other scripts present in the preceding two tasks. For fairness, script systems will be chosen such that they are functionally similar to the training scripts (e.g. the unseen Arabic languages will be replaced with other Abjad).
+
+Data for Subtask 3 is found in the folder `data/eval/task_3`. Each evaluation set is grouped by orthography system. (i.e. `{latin/cyrillic/abjad}_test.tsv`.) We also provide per language evaluation sets.
 
 (N.B. Due to quality concerns, the originally planned Devanagari-based subset was removed from the task. We will release this dataset later for community use.)
 
@@ -41,11 +47,11 @@ The metric used to rank systems is word error rate (WER), the percentage of word
 ## Submission
 Please submit your results in the two-column (grapheme sequence, tab-character, tokenized phone sequence) TSV format, the same one used for the training and development data. If you use an internal representation other than NFC, you must convert back before submitting.
 
-Please use [this email form]() to submit your results.
+Please use email results, models repos, and instructions for validation to sig2p2024@gmail.com.
 ## Timeline
 * January 15, 2024: Data collection is complete, and data is released to participants **RELEASED**
-* February 15, 2024: Baseline systems released to participants
-* May 15, 2024: Test data is available for participants
+* February 15, 2024: Baseline systems released to participants **RELEASED**
+* May 15, 2024: Test data is available for participants **RELEASED**
 * May 31, 2024: Final Submissions are due
 * June 3, 2024: Results announced to participants
 * June 22, 2024: System papers due for review
